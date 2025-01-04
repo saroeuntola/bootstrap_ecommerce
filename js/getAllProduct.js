@@ -39,7 +39,6 @@ function createCategoryFilter(categories) {
       .join("")}
   `;
 
-  // Add event listener to filter products by category
   categoryFilter.addEventListener("change", (e) => {
     const selectedCategory = e.target.value;
     if (selectedCategory === "all") {
@@ -59,16 +58,29 @@ function displayProducts(products) {
     .map(
       (product) => `
         <div class="col-md-6 col-lg-3">
-          <div class="card h-100 p-2 shadow-lg">
-            <img src="${product.image}" class="card-img-top" alt="${product.title}" style="height: 300px; object-fit: cover;">
+          <div class="card h-100 p-3 shadow-lg">
+            <img src="${product.image}" class="card-img-top" alt="${
+        product.title
+      }" style="height: 300px; object-fit: cover;">
             <div class="card-body">
-              <h5 class="card-title">${product.title}</h5>
+<h5 class="card-title">${product.title.substring(0, 30)}...</h5>
+              <p class="card-text">${product.description.substring(
+                0,
+                50
+              )}...</p>
               <p class="card-text text-danger fw-bold">$${product.price}</p>
-              <div>
-                <button class="btn btn-success" onclick="addToCart(${product.id}, '${product.title}', '${product.image}', ${product.price})">Add to Cart</button>
-                <a href="detailProduct.html?id=${product.id}" class="btn btn-primary">View Detail</a>
-              </div>
+             
             </div>
+             <div>
+                <button class="btn btn-success" onclick="addToCart(${
+                  product.id
+                }, '${product.title}', '${product.image}', ${
+        product.price
+      })">Add to Cart</button>
+                <a href="detailProduct.html?id=${
+                  product.id
+                }" class="btn btn-primary">View Detail</a>
+              </div>
           </div>
         </div>
       `

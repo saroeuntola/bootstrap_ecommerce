@@ -1,4 +1,4 @@
-const cart = JSON.parse(localStorage.getItem("cart")) || []; // Load cart from localStorage
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 function renderCart() {
   const cartTableBody = document.querySelector("#cart-table tbody");
@@ -37,7 +37,7 @@ function renderCart() {
 
   grandTotalElement.textContent = `$${grandTotal.toFixed(2)}`;
 
-  renderPaypalButton(grandTotal); // Render PayPal button after updating the cart
+  renderPaypalButton(grandTotal);
 }
 
 function changeQuantity(id, delta) {
