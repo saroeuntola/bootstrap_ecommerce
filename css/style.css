@@ -1,0 +1,18 @@
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+
+}
+/* .carousel-item img{
+    width: 150vh;
+} */
+.shop_container{
+    padding-top: 100px;
+}
+#loading {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+        }

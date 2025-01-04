@@ -1,0 +1,106 @@
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+document.getElementById("loading").style.display = "block";
+
+function updateCartCount() {
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  document.getElementById("cart-count").textContent = cartCount;
+}
+
+async function getAllProducts() {
+  try {
+    const response = await axios.get("https://fakestoreapi.com/products");
+    allProducts = response.data;
+
+    // Fetch categories
+    const categoriesResponse = await axios.get(
+      "https://fakestoreapi.com/products/categories"
+    );
+    const categories = categoriesResponse.data;
+
+    createCategoryFilter(categories);
+    displayProducts(allProducts);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  } finally {
+    document.getElementById("loading").style.display = "none";
+  }
+}
+
+function createCategoryFilter(categories) {
+  const categoryFilter = document.getElementById("category-filter");
+  categoryFilter.innerHTML = `
+    <option value="all">All Categories</option>
+    ${categories
+      .map(
+        (category) => `
+          <option value="${category}">${category}</option>
+        `
+      )
+      .join("")}
+  `;
+
+  // Add event listener to filter products by category
+  categoryFilter.addEventListener("change", (e) => {
+    const selectedCategory = e.target.value;
+    if (selectedCategory === "all") {
+      displayProducts(allProducts);
+    } else {
+      const filteredProducts = allProducts.filter(
+        (product) => product.category === selectedCategory
+      );
+      displayProducts(filteredProducts);
+    }
+  });
+}
+
+function displayProducts(products) {
+  const productList = document.getElementById("product-list");
+  productList.innerHTML = products
+    .map(
+      (product) => `
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 p-2 shadow-lg">
+            <img src="${product.image}" class="card-img-top" alt="${product.title}" style="height: 300px; object-fit: cover;">
+            <div class="card-body">
+              <h5 class="card-title">${product.title}</h5>
+              <p class="card-text text-danger fw-bold">$${product.price}</p>
+              <div>
+                <button class="btn btn-success" onclick="addToCart(${product.id}, '${product.title}', '${product.image}', ${product.price})">Add to Cart</button>
+                <a href="detailProduct.html?id=${product.id}" class="btn btn-primary">View Detail</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    )
+    .join("");
+}
+
+function searchProducts(query) {
+  const filteredProducts = allProducts.filter((product) =>
+    product.title.toLowerCase().includes(query.toLowerCase())
+  );
+  displayProducts(filteredProducts);
+}
+
+document.getElementById("search-input").addEventListener("input", (e) => {
+  const searchQuery = e.target.value;
+  searchProducts(searchQuery);
+});
+
+function addToCart(id, title, image, price) {
+  const existingItem = cart.find((item) => item.id === id);
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({ id, title, image, price, quantity: 1 });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+}
+
+let allProducts = [];
+
+getAllProducts();
+updateCartCount();
